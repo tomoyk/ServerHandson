@@ -23,6 +23,11 @@ Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペ�
 
 // 説明を加える
 
+#### 実験環境
+
+- VMware Workstation Player 12.7 // 要検証
+- Lubuntu 17.10 x86_64
+
 ## 4. Webサーバの構築
 
 ### 4.0 アジェンダ
@@ -334,6 +339,86 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 キー`y`を押して`Enter`で続行します。
 
+	取得:1 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libsigsegv2 amd64 2.11-1 [13.2 kB]
+	取得:2 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 m4 amd64 1.4.18-1 [197 kB]
+	取得:3 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 autoconf all 2.69-11 [322 kB]
+	取得:4 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 autotools-dev all 20161112.1 [39.5 kB]
+	取得:5 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 automake all 1:1.15-6ubuntu1 [509 kB]
+	取得:6 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 autopoint all 0.19.8.1-4ubuntu1 [412 kB]
+	取得:7 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 binutils-common amd64 2.29.1-4ubuntu1 [190 kB]
+	取得:8 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libbinutils amd64 2.29.1-4ubuntu1 [502 kB]
+	取得:9 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 binutils-x86-64-linux-gnu amd64 2.29.1-4ubuntu1 [1,824 kB]
+	取得:10 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 binutils amd64 2.29.1-4ubuntu1 [3,342 B]
+	取得:11 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libc-dev-bin amd64 2.26-0ubuntu2 [69.6 kB]
+	取得:12 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 linux-libc-dev amd64 4.13.0-16.19 [954 kB]
+	取得:13 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libc6-dev amd64 2.26-0ubuntu2 [2,524 kB]
+	取得:14 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libcc1-0 amd64 7.2.0-8ubuntu3 [38.6 kB]
+	取得:15 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libitm1 amd64 7.2.0-8ubuntu3 [27.6 kB]
+	取得:16 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libatomic1 amd64 7.2.0-8ubuntu3 [8,954 B]
+	取得:17 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libasan4 amd64 7.2.0-8ubuntu3 [360 kB]
+	取得:18 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 liblsan0 amd64 7.2.0-8ubuntu3 [133 kB]
+	取得:19 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libtsan0 amd64 7.2.0-8ubuntu3 [282 kB]
+	取得:20 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libubsan0 amd64 7.2.0-8ubuntu3 [126 kB]
+	取得:21 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libcilkrts5 amd64 7.2.0-8ubuntu3 [42.5 kB]
+	取得:22 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libmpx2 amd64 7.2.0-8ubuntu3 [11.7 kB]
+	取得:23 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libgcc-7-dev amd64 7.2.0-8ubuntu3 [2,378 kB]
+	取得:24 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 gcc-7 amd64 7.2.0-8ubuntu3 [7,411 kB]
+	取得:25 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 gcc amd64 4:7.2.0-1ubuntu1 [5,124 B]
+	取得:26 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libstdc++-7-dev amd64 7.2.0-8ubuntu3 [1,456 kB]
+	取得:27 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 g++-7 amd64 7.2.0-8ubuntu3 [7,551 kB]
+	取得:28 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 g++ amd64 4:7.2.0-1ubuntu1 [1,482 B]
+	取得:29 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 make amd64 4.1-9.1 [154 kB]
+	取得:30 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libdpkg-perl all 1.18.24ubuntu1 [209 kB]
+	取得:31 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 dpkg-dev all 1.18.24ubuntu1 [608 kB]
+	取得:32 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 build-essential amd64 12.4ubuntu1 [4,758 B]
+	取得:33 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libtool all 2.4.6-2 [194 kB]
+	取得:34 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 dh-autoreconf all 14 [15.5 kB]
+	取得:35 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libarchive-zip-perl all 1.59-1 [84.0 kB]
+	取得:36 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libfile-stripnondeterminism-perl all 0.038-1 [13.3 kB]
+	取得:37 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 dh-strip-nondeterminism all 0.038-1 [5,026 B]
+	取得:38 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 gettext amd64 0.19.8.1-4ubuntu1 [1,093 kB]
+	取得:39 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 intltool-debian all 0.35.0+20060710.4 [24.9 kB]
+	取得:40 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 po-debconf all 1.0.20 [232 kB]
+	取得:41 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 debhelper all 10.7.2ubuntu2 [877 kB]
+	取得:42 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libfakeroot amd64 1.21-1ubuntu2 [25.9 kB]
+	php7.1-opcache (7.1.8-1ubuntu1) を設定しています ...
+	
+	Creating config file /etc/php/7.1/mods-available/opcache.ini with new version
+	binutils-x86-64-linux-gnu (2.29.1-4ubuntu1) を設定しています ...
+	php-xml (1:7.1+54ubuntu1) を設定しています ...
+	php7.1-cli (7.1.8-1ubuntu1) を設定しています ...
+	update-alternatives: /usr/bin/php (php) を提供するために自動モードで /usr/bin/php7.1 を使います
+	update-alternatives: /usr/bin/phar (phar) を提供するために自動モードで /usr/bin/phar7.1 を使います
+	update-alternatives: /usr/bin/phar.phar (phar.phar) を提供するために自動モードで /usr/bin/phar.phar7.1 を使います
+	
+	Creating config file /etc/php/7.1/cli/php.ini with new version
+	php-pear (1:1.10.5+submodules+notgz-1) を設定しています ...
+	binutils (2.29.1-4ubuntu1) を設定しています ...
+	libapache2-mod-php7.1 (7.1.8-1ubuntu1) を設定しています ...
+	
+	Creating config file /etc/php/7.1/apache2/php.ini with new version
+	Module mpm_event disabled.
+	Enabling module mpm_prefork.
+	apache2_switch_mpm Switch to prefork
+	apache2_invoke: Enable module php7.1
+	libapache2-mod-php (1:7.1+54ubuntu1) を設定しています ...
+	gcc-7 (7.2.0-8ubuntu3) を設定しています ...
+	g++-7 (7.2.0-8ubuntu3) を設定しています ...
+	gcc (4:7.2.0-1ubuntu1) を設定しています ...
+	dpkg-dev (1.18.24ubuntu1) を設定しています ...
+	g++ (4:7.2.0-1ubuntu1) を設定しています ...
+	update-alternatives: /usr/bin/c++ (c++) を提供するために自動モードで /usr/bin/g++ を使います
+	libtool (2.4.6-2) を設定しています ...
+	build-essential (12.4ubuntu1) を設定しています ...
+	php7.1-dev (7.1.8-1ubuntu1) を設定しています ...
+	update-alternatives: /usr/bin/php-config (php-config) を提供するために自動モードで /usr/bin/php-config7.1 を使います
+	update-alternatives: /usr/bin/phpize (phpize) を提供するために自動モードで /usr/bin/phpize7.1 を使います
+	dh-autoreconf (14) を設定しています ...
+	dh-strip-nondeterminism (0.038-1) を設定しています ...
+	debhelper (10.7.2ubuntu2) を設定しています ...
+	pkg-php-tools (1.35) を設定しています ...
+	libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
+
 **ApacheでPHPを使うためのパッケージ**
 
 - libapache2-mod-php
@@ -354,6 +439,10 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 - php7.1-mysql
 
 ### MySQLデータベースのインストール
+
+MySQLデータベースをインストールします。
+
+`sudo apt install xxx`
 
 
 
