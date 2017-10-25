@@ -258,7 +258,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 ### ポート状況の確認
 
-ポート開放状況は`netstat`か`ss`を使って確認.
+ポート開放状況は`netstat`か`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
 	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
 	tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
@@ -276,4 +276,84 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	LISTEN     0      5          ::1:631                     :::*
 	LISTEN     0      128         :::5355                    :::*
 	LISTEN     0      128         :::80                      :::*
+
+以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
+
+	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
+	(略)
+	tcp6       0      0 :::80                   :::*                    LISTEN
+	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
+	(略)
+	LISTEN     0      128         :::80                      :::*
+
+以下に主要なポートの一覧をあげます。
+
+|ポート番号|プロトコル|サービス名|
+|---|---|---|
+|80|TCP|HTTP|
+|53|UDP|DNS|
+|22|TCP|SSH|
+|443|TCP|HTTPS|
+
+### PHP(プログラミング言語)のインストール
+
+プログラミング言語PHPの実行に必要なパッケージをインストールします。
+
+`sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql`
+
+	ebi@ebi-virtual-machine:~$ sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql
+	パッケージリストを読み込んでいます... 完了
+	依存関係ツリーを作成しています
+	状態情報を読み取っています... 完了
+	以下の追加パッケージがインストールされます:
+	  autoconf automake autopoint autotools-dev binutils binutils-common binutils-x86-64-linux-gnu build-essential debhelper dh-autoreconf
+	  dh-strip-nondeterminism dpkg-dev fakeroot g++ g++-7 gcc gcc-7 gettext intltool-debian libalgorithm-diff-perl libalgorithm-diff-xs-perl
+	  libalgorithm-merge-perl libarchive-cpio-perl libarchive-zip-perl libasan4 libatomic1 libbinutils libc-dev-bin libc6-dev libcc1-0
+	  libcilkrts5 libdpkg-perl libfakeroot libfile-fcntllock-perl libfile-stripnondeterminism-perl libgcc-7-dev libitm1 liblsan0 libltdl-dev
+	  libmail-sendmail-perl libmpx2 libpcre16-3 libpcre3-dev libpcre32-3 libpcrecpp0v5 libsigsegv2 libssl-dev libssl-doc libstdc++-7-dev
+	  libsys-hostname-long-perl libtool libtsan0 libubsan0 libxmlrpc-epi0 linux-libc-dev m4 make manpages-dev php-pear php-xml php7.1-xml
+	  pkg-php-tools po-debconf shtool zlib1g-dev
+	提案パッケージ:
+	  autoconf-archive gnu-standards autoconf-doc binutils-doc dh-make debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg
+	  gcc-multilib flex bison gdb gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg
+	  liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg gettext-doc libasprintf-dev libgettextpo-dev
+	  glibc-doc libtool-doc libstdc++-7-doc gfortran | fortran95-compiler gcj-jdk m4-doc make-doc dh-php libmail-box-perl
+	以下のパッケージが新たにインストールされます:
+	  autoconf automake autopoint autotools-dev binutils binutils-common binutils-x86-64-linux-gnu build-essential debhelper dh-autoreconf
+	  dh-strip-nondeterminism dpkg-dev fakeroot g++ g++-7 gcc gcc-7 gettext intltool-debian libalgorithm-diff-perl libalgorithm-diff-xs-perl
+	  libalgorithm-merge-perl libapache2-mod-php libapache2-mod-php7.1 libarchive-cpio-perl libarchive-zip-perl libasan4 libatomic1
+	  libbinutils libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libdpkg-perl libfakeroot libfile-fcntllock-perl libfile-stripnondeterminism-perl
+	  libgcc-7-dev libitm1 liblsan0 libltdl-dev libmail-sendmail-perl libmpx2 libpcre16-3 libpcre3-dev libpcre32-3 libpcrecpp0v5 libsigsegv2
+	  libssl-dev libssl-doc libstdc++-7-dev libsys-hostname-long-perl libtool libtsan0 libubsan0 libxmlrpc-epi0 linux-libc-dev m4 make
+	  manpages-dev php-common php-pear php-xml php7.1-cli php7.1-common php7.1-dev php7.1-gd php7.1-json php7.1-mbstring php7.1-mysql
+	  php7.1-opcache php7.1-readline php7.1-xml php7.1-xmlrpc pkg-php-tools po-debconf shtool zlib1g-dev
+	アップグレード: 0 個、新規インストール: 78 個、削除: 0 個、保留: 0 個。
+	42.3 MB のアーカイブを取得する必要があります。
+	この操作後に追加で 185 MB のディスク容量が消費されます。
+	続行しますか? [Y/n] y
+
+キー`y`を押して`Enter`で続行します。
+
+**ApacheでPHPを使うためのパッケージ**
+
+- libapache2-mod-php
+- libapache2-mod-php7.1
+
+**WordPressで必要となるPHPのパッケージ**
+
+- php-common
+- php7.1-cli
+- php7.1-common
+- php7.1-json
+- php7.1-opcache
+- php7.1-readline
+- php7.1-gd
+- php7.1-xmlrpc
+- php7.1-dev
+- php7.1-mbstring
+- php7.1-mysql
+
+### MySQLデータベースのインストール
+
+
 
