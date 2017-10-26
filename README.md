@@ -438,11 +438,111 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 - php7.1-mbstring
 - php7.1-mysql
 
+### PHPの設定
+
+edit confs
+
 ### MySQLデータベースのインストール
 
 MySQLデータベースをインストールします。
 
-`sudo apt install xxx`
+`sudo apt install mysql-common mysql-server mysql-client`
 
+  ebi@ebi-virtual-machine:~$ sudo apt install mysql-common mysql-server mysql-client
+  [sudo] ebi のパスワード:
+  パッケージリストを読み込んでいます... 完了
+  依存関係ツリーを作成しています
+  状態情報を読み取っています... 完了
+  mysql-common はすでに最新バージョン (5.8+1.0.2ubuntu1) です。
+  mysql-common は手動でインストールしたと設定されました。
+  以下の追加パッケージがインストールされます:
+    libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-template-perl mysql-client-5.7 mysql-client-core-5.7
+    mysql-server-5.7 mysql-server-core-5.7
+  提案パッケージ:
+    libipc-sharedcache-perl mailx tinyca
+  以下のパッケージが新たにインストールされます:
+    libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-template-perl mysql-client mysql-client-5.7
+    mysql-client-core-5.7 mysql-server mysql-server-5.7 mysql-server-core-5.7
+  アップグレード: 0 個、新規インストール: 12 個、削除: 0 個、保留: 5 個。
+  20.6 MB のアーカイブを取得する必要があります。
+  この操作後に追加で 161 MB のディスク容量が消費されます。
+  続行しますか? [Y/n] y
+
+確認が出るので`y`を入力して`Enter`を押します.
+
+img
+
+パスワード入力を求められるので任意のパスワードを設定します。ここでは`k@pp@ebi1000`と設定しました。
+
+  (略)
+  以前に未選択のパッケージ libfcgi-perl を選択しています。
+  .../07-libfcgi-perl_0.78-2build1_amd64.deb を展開する準備をしています ...
+  libfcgi-perl (0.78-2build1) を展開しています...
+  以前に未選択のパッケージ libcgi-fast-perl を選択しています。
+  .../08-libcgi-fast-perl_1%3a2.12-1_all.deb を展開する準備をしています ...
+  libcgi-fast-perl (1:2.12-1) を展開しています...
+  以前に未選択のパッケージ libhtml-template-perl を選択しています。
+  .../09-libhtml-template-perl_2.95-2_all.deb を展開する準備をしています ...
+  libhtml-template-perl (2.95-2) を展開しています...
+  以前に未選択のパッケージ mysql-client を選択しています。
+  .../10-mysql-client_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
+  mysql-client (5.7.20-0ubuntu0.17.10.1) を展開しています...
+  以前に未選択のパッケージ mysql-server を選択しています。
+  .../11-mysql-server_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
+  mysql-server (5.7.20-0ubuntu0.17.10.1) を展開しています...
+  libevent-core-2.1-6:amd64 (2.1.8-stable-4) を設定しています ...
+  ureadahead (0.100.0-20) のトリガを処理しています ...
+  libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
+  libaio1:amd64 (0.3.110-4) を設定しています ...
+  systemd (234-2ubuntu12) のトリガを処理しています ...
+  libcgi-pm-perl (4.36-1) を設定しています ...
+  man-db (2.7.6.1-2) のトリガを処理しています ...
+  mysql-client-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  libfcgi-perl (0.78-2build1) を設定しています ...
+  libhtml-template-perl (2.95-2) を設定しています ...
+  mysql-server-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  libcgi-fast-perl (1:2.12-1) を設定しています ...
+  mysql-client-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  mysql-client (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  mysql-server-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  update-alternatives: /etc/mysql/my.cnf (my.cnf) を提供するために自動モードで /etc/mysql/mysql.cnf を使います
+  Renaming removed key_buffer and myisam-recover options (if present)
+  Created symlink /etc/systemd/system/multi-user.target.wants/mysql.service → /lib/systemd/system/mysql.service.
+  mysql-server (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+  libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
+  ureadahead (0.100.0-20) のトリガを処理しています ...
+  systemd (234-2ubuntu12) のトリガを処理しています ...
+
+インストールが完了したら、データベースサーバに接続します。
+
+データベース・サーバが起動しているかポート状況を確認します。
+
+#### 練習
+
+データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみましょう。
+
+ヒント: `netstatコマンド`, `ssコマンド`
+
+### MySQLの設定
+
+MySQLサーバへログインします。
+
+`mysql -uroot -pk@pp@ebi1000`
+
+  ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
+  mysql: [Warning] Using a password on the command line interface can be insecure.
+  Welcome to the MySQL monitor.  Commands end with ; or \g.
+  Your MySQL connection id is 7
+  Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
+
+  Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+  Oracle is a registered trademark of Oracle Corporation and/or its
+  affiliates. Other names may be trademarks of their respective
+  owners.
+
+  Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+  mysql>
 
 
