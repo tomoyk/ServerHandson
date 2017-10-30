@@ -529,7 +529,7 @@ MySQLデータベースをインストールします。
 
 ヒント: `netstatコマンド`, `ssコマンド`
 
-### MySQLの設定
+### MySQLへログイン
 
 MySQLサーバへログインします。
 
@@ -550,6 +550,23 @@ MySQLサーバへログインします。
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 	
 	mysql> 
+
+### MySQLのユーザを追加
+
+MySQLのユーザ`wp-user`を追加します。`root`を使用することも出来ますが、アカウントが悪用された時の影響範囲を小さくするために新たなユーザを追加しています。
+
+- ユーザ名:`wp-user`
+- パスワード:`kabayaki3taro`
+
+	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
+	Query OK, 0 rows affected (0.00 sec)
+
+ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
+
+	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost' 
+	Query OK, 0 rows affected (0.00 sec)
+
+### MySQLにデータベースを追加
 
 存在しているデータベースをコマンド`show databases;`で表示します。
 
@@ -577,6 +594,8 @@ WordPressで使用するデータベースを作成します。`wordpress`とい
 ヒント: `show ???`というコマンド使う
 
 ---
+
+### データベースのテーブルを確認
 
 データベース`wordpress`の中身であるテーブルを確認してみます。
 
