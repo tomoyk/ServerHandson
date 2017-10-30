@@ -1,5 +1,11 @@
 # サーバ構築入門(Apache/WordPress)
 
+## 0. セットアップ
+
+	sudo apt install curl net-tools
+	# vmwaretools
+	# desktop-shortcut
+
 ## 1. はじめに
 
 この講座では, あらかじめ用意したVirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。
@@ -43,14 +49,14 @@ Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペ�
 
 VMware Playerを起動して、配布したVMを立ち上げます。
 
-img01
+<img src="images/img02.png" width="500">
 
 VMが起動したら以下の資格情報でログインしてください。
 
 - UserName: ebi
 - Password: kappaebi1000
 
-img02
+<img src="images/img01.png" width="500">
 
 ### 4.2 ネットワーク設定
 
@@ -442,7 +448,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 edit confs
 
-### MySQLデータベースのインストール
+## 5. MySQLデータベースのインストール
 
 MySQLデータベースをインストールします。
 
@@ -470,7 +476,7 @@ MySQLデータベースをインストールします。
 
 確認が出るので`y`を入力して`Enter`を押します.
 
-img
+<img src="images/img03.png" width="500">
 
 パスワード入力を求められるので任意のパスワードを設定します。ここでは`k@pp@ebi1000`と設定しました。
 
@@ -519,7 +525,7 @@ img
 
 #### 練習
 
-データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみましょう。
+データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみよう。
 
 ヒント: `netstatコマンド`, `ssコマンド`
 
@@ -543,5 +549,77 @@ MySQLサーバへログインします。
 	
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 	
+	mysql> 
+
+存在しているデータベースをコマンド`show databases;`で表示します。
+
+	mysql> show databases;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	+--------------------+
+	4 rows in set (0.01 sec)
+	mysql> 
+
+WordPressで使用するデータベースを作成します。`wordpress`という名前のデータベースを作成します。
+
+	mysql> create database wordpress;
+	mysql> 
+
+#### 練習
+
+`wordpress`というデータベースが作成されているか確認してみましょう。
+
+ヒント: `show ???`というコマンド使う
+
+---
+
+データベース`wordpress`の中身であるテーブルを確認してみます。
+
+まず、データベース`wordpress`を選択します。
+
+	mysql> use wordpress;
+	Database changed
 	mysql>
+
+次に、テーブルの一覧を表示します。
+
+	mysql> show tables;
+	Empty set (0.03 sec)
+	mysql>
+
+実行結果から、まだ何もテーブルが作成されていないことが確認できます。
+
+一度、MySQLから抜けます。
+
+	mysql> quit
+	Bye
+
+## 6. WordPressのインストール
+
+### WordPressについて
+
+### WordPressの設置
+
+ダウンロード
+
+展開
+
+配置
+
+パーミッション
+
+### Webからアクセス
+
+インストール
+
+
+
+
+	
+
 
