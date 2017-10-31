@@ -616,22 +616,112 @@ WordPressの公式サイトへアクセスし、WordPressをダウンロード�
 
 ### WordPressの展開と設置
 
-ダウンロードしたファイル`wordpress-4.8.2-ja.zip`を解凍します。
+ダウンロードしたファイル`wordpress-4.8.2-ja.zip`を`unzip`コマンドで解凍します。
 
-#### 練習
-
-情報リテラシー演習の復習です。拡張子`tar.gz`のファイルを解凍、展開してみましょう。
+	ebi@ubuntu:~$ unzip wordpress-4.8.2-ja.zip
+	Archive:  wordpress-4.8.2-ja.zip
+	   creating: wordpress/
+	  inflating: wordpress/wp-trackback.php
+	   creating: wordpress/wp-admin/
+	  inflating: wordpress/wp-admin/media-upload.php
+	  inflating: wordpress/wp-admin/install-helper.php
+	  inflating: wordpress/wp-admin/ms-users.php
+	  inflating: wordpress/wp-admin/menu-header.php
+	  inflating: wordpress/wp-admin/update.php
+	  inflating: wordpress/wp-admin/plugin-install.php
+	  inflating: wordpress/wp-admin/theme-editor.php
+	   creating: wordpress/wp-admin/images/
+		(略)
+	  inflating: wordpress/wp-settings.php
+	  inflating: wordpress/wp-cron.php
+	  inflating: wordpress/wp-login.php
+	  inflating: wordpress/wp-activate.php
+	  inflating: wordpress/license.txt
+	  inflating: wordpress/wp-signup.php
+	  inflating: wordpress/index.php
+	  inflating: wordpress/wp-mail.php
+	  inflating: wordpress/wp-config-sample.php
+	  inflating: wordpress/wp-comments-post.php
 
 ---
 
 展開すると`wordpress`というディレクトリが存在します。このディレクトリを`/var/www/`へ移動します。
 
-`mv wordpress/ /var/www/`
+`sudo mv wordpress/ /var/www/html/`
 
-パーミッションのこと
+続いて`/var/www/html/`へ移動します。
 
-インストール時に使うURL
+`cd /var/www/html`
 
-### Webからアクセス
+ファイルのパーミッションを確認します。
 
-インストール
+#### 練習
+
+コマンドを使ってファイルのパーミッションをチェックしてみましょう。また、`index.html`の所有者を確認してみましょう。
+
+ヒント: `ls`コマンド
+
+---
+
+ディレクトリ`wordpress`の所有者を`ebi`から`www-data`へ変更します。`-R`でディレクトリ内にあるファイルやディレクトリを再帰的に変更します。
+
+`sudo chown -R www-data: wordpress/`
+
+### Webブラウザからアクセス
+
+VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Google ChromeやFirefox)を起動します。
+
+ブラウザのアドレス欄へ `http://IPアドレス/wordpresss/`　を入力してアクセスします。
+
+// describe...
+
+- サイト名: りなっくす
+- ユーザ名: kabukiage
+- パスワード: 4KM7a*xQNF2IBJctAG
+- メールアドレス: a@b.com
+
+	mysql> show databases;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	| wordpress          |
+	+--------------------+
+	5 rows in set (0.02 sec)
+
+	mysql> use wordpress;
+	Reading table information for completion of table and column names
+	You can turn off this feature to get a quicker startup with -A
+
+	Database changed
+
+	mysql> show tables;
+	+-----------------------+
+	| Tables_in_wordpress   |
+	+-----------------------+
+	| wp_commentmeta        |
+	| wp_comments           |
+	| wp_links              |
+	| wp_options            |
+	| wp_postmeta           |
+	| wp_posts              |
+	| wp_term_relationships |
+	| wp_term_taxonomy      |
+	| wp_termmeta           |
+	| wp_terms              |
+	| wp_usermeta           |
+	| wp_users              |
+	+-----------------------+
+	12 rows in set (0.00 sec)
+
+	mysql> select * from wp_users;
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	| ID | user_login | user_pass                          | user_nicename | user_email | user_url | user_registered     | user_activation_key | user_status | display_name |
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	|  1 | kabukiage  | $P$BHrhfHenRfBgNwayaCck.GKddKzwK11 | kabukiage     | a@b.com    |          | 2017-10-31 13:06:13 |                     |           0 | kabukiage    |
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	1 row in set (0.00 sec)
+
