@@ -12,40 +12,27 @@
 
 ## 2. Linuxについて
 
-Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発された。Linuxのプログラムの特徴としてライセンス形態が挙げられる。Linuxのプログラムには`GPL(GNU General Public License)というライセンス形式が付与されている。これには以下の内容が含まれています。
+Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発されました。Linuxのプログラムの特徴としてライセンス形態が挙げられます。Linuxのプログラムには`GPL(GNU General Public License)というライセンス形式が付与されています。これには以下の内容が含まれています。
 
 > - プログラムを実行する自由
 > - ソースの改変の自由
 > - 利用・再配布の自由
 > - 改良したプログラムをリリースする権利
-> 
+>
 > (Linux標準教科書より引用)
 
 こうした自由な形態を採用した為、限られた組織や個人によって独占されることなく広く普及し発展しました。詳しいことは`書籍:Unix考古学`などに書かれています。
 
-## 3. サーバについて
+## 3. サーバの基本
 
 サーバとは不特定多数によるアクセスが可能なコンピュータ。
 
-// 説明を加える
-
-#### 実験環境
+### 実験環境
 
 - VMware Workstation Player 12.7 // 要検証
 - Lubuntu 17.10 x86_64
 
-## 4. Webサーバの構築
-
-### 4.0 アジェンダ
-
-- VMを起動
-- ネットワーク設定の確認
-- Apacheのインストール
-- プロセスの確認
-- ポートの確認
-- ファイヤウォールの確認
-
-### 4.1 VMの起動
+### VMの起動
 
 VMware Playerを起動して、配布したVMを立ち上げます。
 
@@ -58,42 +45,24 @@ VMが起動したら以下の資格情報でログインしてください。
 
 <img src="images/img01.png" width="500">
 
-### 4.2 ネットワーク設定
+### ネットワークまわり
 
 #### IPアドレスの確認
 
-IPアドレスを確認します。コマンドラインに`ifconfig`または`ip a`を入力します。
+IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
-	ebi@ebi-virtual-machine:~$ ifconfig
-	ens33: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-	        inet 192.168.223.154  netmask 255.255.255.0  broadcast 192.168.223.255
-	        inet6 fe80::a8dc:fd46:8a0b:d3e9  prefixlen 64  scopeid 0x20<link>
-	        ether 00:0c:29:90:d5:eb  txqueuelen 1000  (イーサネット)
-	        RX packets 80  bytes 24103 (24.1 KB)
-	        RX errors 0  dropped 0  overruns 0  frame 0
-	        TX packets 120  bytes 12064 (12.0 KB)
-	        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-	
-	lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-	        inet 127.0.0.1  netmask 255.0.0.0
-	        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-	        loop  txqueuelen 1000  (ローカルループバック)
-	        RX packets 108  bytes 7968 (7.9 KB)
-	        RX errors 0  dropped 0  overruns 0  frame 0
-	        TX packets 108  bytes 7968 (7.9 KB)
-	        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 	ebi@ebi-virtual-machine:~$ ip a
 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 	    inet 127.0.0.1/8 scope host lo
 	       valid_lft forever preferred_lft forever
-	    inet6 ::1/128 scope host 
+	    inet6 ::1/128 scope host
 	       valid_lft forever preferred_lft forever
 	2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
 	    link/ether 00:0c:29:90:d5:eb brd ff:ff:ff:ff:ff:ff
 	    inet 192.168.223.154/24 brd 192.168.223.255 scope global dynamic ens33
 	       valid_lft 1152sec preferred_lft 1152sec
-	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link 
+	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
 ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
@@ -127,7 +96,7 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 	--- 8.8.8.8 ping statistics ---
 	5 packets transmitted, 5 received, 0% packet loss, time 4010ms
 	rtt min/avg/max/mdev = 3.987/4.515/5.061/0.376 ms
-	
+
 	ebi@ebi-virtual-machine:~$ ping 8.8.8.7
 	PING 8.8.8.7 (8.8.8.7) 56(84) bytes of data.
 	^C
@@ -136,7 +105,7 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 
 サーバからの応答があれば外部との通信が出来ていると判断できます。
 
-### 4.3 パッケージのインストール
+### パッケージのインストール
 
 #### パッケージマネージャについて
 
@@ -144,16 +113,20 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 
 Linuxにはソフトウェアを一元管理しているパッケージマネージャという便利な仕組みがあります。この仕組みによってソフトウェアをパッケージという単位でコマンドを使って管理できるようになります。
 
-#### Apacheのインストール
+#### パッケージのインストール
+
+コマンド`sudo apt install [パッケージ名]`を入力することでパッケージがインストールされます。
+
+## 4. Webサーバの構築
 
 次にApacheというWebサーバソフトウェアをパッケージマネージャと利用してインストールします。ターミナルに以下のコマンドを打ち込みます。
 
 `sudo apt install apache2`
 
 	ebi@ebi-virtual-machine:~$ sudo apt install apache2
-	[sudo] ebi のパスワード: 
+	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
-	依存関係ツリーを作成しています                
+	依存関係ツリーを作成しています
 	状態情報を読み取っています... 完了
 	以下の追加パッケージがインストールされます:
 	  apache2-bin apache2-data apache2-utils libapr1 libaprutil1
@@ -269,16 +242,8 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 ### ポート状況の確認
 
-ポート開放状況は`netstat`か`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
+ポート開放状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
-	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
-	tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
-	tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN
-	tcp        0      0 0.0.0.0:5355            0.0.0.0:*               LISTEN
-	tcp6       0      0 :::22                   :::*                    LISTEN
-	tcp6       0      0 ::1:631                 :::*                    LISTEN
-	tcp6       0      0 :::5355                 :::*                    LISTEN
-	tcp6       0      0 :::80                   :::*                    LISTEN
 	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
 	LISTEN     0      128          *:22                       *:*
 	LISTEN     0      5      127.0.0.1:631                      *:*
@@ -290,9 +255,6 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
 
-	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
-	(略)
-	tcp6       0      0 :::80                   :::*                    LISTEN
 	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
 	(略)
 	LISTEN     0      128         :::80                      :::*
@@ -388,7 +350,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	取得:41 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 debhelper all 10.7.2ubuntu2 [877 kB]
 	取得:42 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libfakeroot amd64 1.21-1ubuntu2 [25.9 kB]
 	php7.1-opcache (7.1.8-1ubuntu1) を設定しています ...
-	
+
 	Creating config file /etc/php/7.1/mods-available/opcache.ini with new version
 	binutils-x86-64-linux-gnu (2.29.1-4ubuntu1) を設定しています ...
 	php-xml (1:7.1+54ubuntu1) を設定しています ...
@@ -396,12 +358,12 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	update-alternatives: /usr/bin/php (php) を提供するために自動モードで /usr/bin/php7.1 を使います
 	update-alternatives: /usr/bin/phar (phar) を提供するために自動モードで /usr/bin/phar7.1 を使います
 	update-alternatives: /usr/bin/phar.phar (phar.phar) を提供するために自動モードで /usr/bin/phar.phar7.1 を使います
-	
+
 	Creating config file /etc/php/7.1/cli/php.ini with new version
 	php-pear (1:1.10.5+submodules+notgz-1) を設定しています ...
 	binutils (2.29.1-4ubuntu1) を設定しています ...
 	libapache2-mod-php7.1 (7.1.8-1ubuntu1) を設定しています ...
-	
+
 	Creating config file /etc/php/7.1/apache2/php.ini with new version
 	Module mpm_event disabled.
 	Enabling module mpm_prefork.
@@ -527,44 +489,29 @@ MySQLデータベースをインストールします。
 
 データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみよう。
 
-ヒント: `netstatコマンド`, `ssコマンド`
+ヒント: `ssコマンド`
 
 ### MySQLへログイン
 
 MySQLサーバへログインします。
 
 `mysql -uroot -pk@pp@ebi1000`
-	
+
 	ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
 	Welcome to the MySQL monitor.  Commands end with ; or \g.
 	Your MySQL connection id is 7
 	Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
-	
+
 	Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
-	
+
 	Oracle is a registered trademark of Oracle Corporation and/or its
 	affiliates. Other names may be trademarks of their respective
 	owners.
-	
+
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-	
-	mysql> 
 
-### MySQLのユーザを追加
-
-MySQLのユーザ`wp-user`を追加します。`root`を使用することも出来ますが、アカウントが悪用された時の影響範囲を小さくするために新たなユーザを追加しています。
-
-- ユーザ名:`wp-user`
-- パスワード:`kabayaki3taro`
-
-	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
-	Query OK, 0 rows affected (0.00 sec)
-
-ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
-
-	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost' 
-	Query OK, 0 rows affected (0.00 sec)
+	mysql>
 
 ### MySQLにデータベースを追加
 
@@ -580,20 +527,47 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 	| sys                |
 	+--------------------+
 	4 rows in set (0.01 sec)
-	mysql> 
+	mysql>
 
 WordPressで使用するデータベースを作成します。`wordpress`という名前のデータベースを作成します。
 
 	mysql> create database wordpress;
-	mysql> 
+	mysql>
 
 #### 練習
 
 `wordpress`というデータベースが作成されているか確認してみましょう。
 
-ヒント: `show ???`というコマンド使う
+ヒント: `show ???`というコマンド使う。
+
+	mysql> show ???;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	| wordpress          |
+	+--------------------+
+	5 rows in set (0.02 sec)
 
 ---
+
+### MySQLのユーザを追加
+
+MySQLのユーザ`wp-user`を追加します。`root`を使用することも出来ますが、アカウントが悪用された時の影響範囲を小さくするために新たなユーザを追加しています。
+
+- ユーザ名:`wp-user`
+- パスワード:`kabayaki3taro`
+
+	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
+	Query OK, 0 rows affected (0.00 sec)
+
+ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
+
+	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost';
+	Query OK, 0 rows affected (0.00 sec)
 
 ### データベースのテーブルを確認
 
