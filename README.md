@@ -1,14 +1,8 @@
 # サーバ構築入門(Apache/WordPress)
 
-## 0. セットアップ
-
-	sudo apt install curl net-tools
-	# vmwaretools
-	# desktop-shortcut
-
 ## 1. はじめに
 
-この講座では, あらかじめ用意したVirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。
+この講座では, VirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。授業とは別にVMを用意しておくことをオススメします。
 
 ## 2. Linuxについて
 
@@ -23,27 +17,33 @@ Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペ�
 
 こうした自由な形態を採用した為、限られた組織や個人によって独占されることなく広く普及し発展しました。詳しいことは`書籍:Unix考古学`などに書かれています。
 
-## 3. サーバの基本
+## 3. サーバの基本情報
 
 サーバとは不特定多数によるアクセスが可能なコンピュータ。
 
 ### 実験環境
 
-- VMware Workstation Player 12.7 // 要検証
-- Lubuntu 17.10 x86_64
+- VMware Workstation Player 12.7
+- Ubuntu 17.10 x86_64
 
 ### VMの起動
 
-VMware Playerを起動して、配布したVMを立ち上げます。
+VMware Playerを起動してVMを立ち上げます。
 
 <img src="images/img02.png" width="500">
 
-VMが起動したら以下の資格情報でログインしてください。
-
-- UserName: ebi
-- Password: kappaebi1000
+VMが起動してログインします。
 
 <img src="images/img01.png" width="500">
+
+
+左下のボタン（ランチャ）から`Terminal`を起動します
+
+<img src="images/img04.png" width="500">
+
+起動すると以下の画面が表示されます
+
+<img src="images/img05.png" width="500">
 
 ### ネットワークまわり
 
@@ -60,14 +60,12 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	       valid_lft forever preferred_lft forever
 	2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
 	    link/ether 00:0c:29:90:d5:eb brd ff:ff:ff:ff:ff:ff
-	    inet 192.168.223.154/24 brd 192.168.223.255 scope global dynamic ens33
+	    inet 192.168.223.159/24 brd 192.168.223.255 scope global dynamic ens33
 	       valid_lft 1152sec preferred_lft 1152sec
 	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
 ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
-
-// 抽出した実行結果
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
@@ -490,6 +488,14 @@ MySQLデータベースをインストールします。
 データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみよう。
 
 ヒント: `ssコマンド`
+
+#### 練習2
+
+MySQLサーバが起動しているか確認してみます。プロセス一覧には`mysql`という文字列が含まれています。
+
+ヒント: `psコマンド`
+
+---
 
 ### MySQLへログイン
 
