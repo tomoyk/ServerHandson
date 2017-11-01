@@ -26,6 +26,39 @@ Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペ�
 - VMware Workstation Player 12.7
 - Ubuntu 17.10 x86_64
 
+### Ubuntu のインストール
+まずハンズオン用の環境を作るために、VMware PlayerにUbuntuをインストールしていきます。
+
+1. VMware Playerを起動して、右ペイン一番上の項目を選択し、仮想マシンウィザードを立ち上げて下さい。
+
+<img src="images/inst01.png" width="500">
+
+2. 「Use ISO image」からISOイメージを選択して「Next」をクリックして下さい。ISOイメージを選択することで自動的にOSが認識されVMの設定が最適化されます。
+
+<img src="images/inst02.png" width="500">
+
+3. Ubuntuにログインするための認証情報を設定して下さい。ここで入力した情報でUbuntuの認証情報が設定されます。画像では以下の設定になっています。
+```
+    Full name :  ebi
+    User name :  ebi
+    Password  :  kappaebi1000
+    Confirm   :  kappaebi1000
+```
+<img src="images/inst03.png" width="500">
+
+4. 仮想マシンの名前と場所を設定します。名前は分かりやすいものを、場所は十分に空き容量があるボリュームに設定して下さい。
+
+<img src="images/inst04.png" width="500">
+
+5. 仮想マシンに接続する仮想ハードディスクのサイズを設定します。とりあえず20GBで大丈夫だと思いますのでこのまま次に進んで下さい。
+
+<img src="images/inst05.png" width="500">
+
+6. 仮想マシンに対する設定が完了しました。このまま「Finish」をクリックすることで自動的にUbuntuがインストールされ、VMware-toolsも自動的に入ります。
+
+<img src="images/inst06.png" width="500">
+
+
 ### VMの起動
 
 VMware Playerを起動してVMを立ち上げます。
@@ -45,13 +78,35 @@ VMが起動してログインします。
 
 <img src="images/img05.png" width="500">
 
+### 日本語対応及び国内リポジトリに変更
+
+このままでは、日本語の対応が不安定だったり、aptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
+
+```
+    echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
+    
+    wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+    
+    wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
+    
+    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
+    
+    sudo apt update
+    
+    sudo apt dist-upgrade
+    
+    sudo apt install ubuntu-defaults-ja
+    
+    sudo systemctl reboot -i
+```
+
 ### ネットワークまわり
 
 #### IPアドレスの確認
 
 IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
-	ebi@ebi-virtual-machine:~$ ip a
+	ebi@ubuntu:~$ ip a
 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 	    inet 127.0.0.1/8 scope host lo
@@ -65,7 +120,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
-ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
+ここで`inet x.x.x.x (192.168.x.xや172.16.x.x)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
@@ -83,7 +138,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
 次に`pingコマンド`を利用してネットワーク通信が行えるか確認します。ターミナルに`ping 8.8.8.8`と入力してEnterを押下します。終了するには`Ctrl + C`を押します。
 
-	ebi@ebi-virtual-machine:~$ ping 8.8.8.8
+	ebi@ubuntu:~$ ping 8.8.8.8
 	PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 	64 bytes from 8.8.8.8: icmp_seq=1 ttl=128 time=4.43 ms
 	64 bytes from 8.8.8.8: icmp_seq=2 ttl=128 time=4.78 ms
@@ -95,7 +150,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	5 packets transmitted, 5 received, 0% packet loss, time 4010ms
 	rtt min/avg/max/mdev = 3.987/4.515/5.061/0.376 ms
 
-	ebi@ebi-virtual-machine:~$ ping 8.8.8.7
+	ebi@ubuntu:~$ ping 8.8.8.7
 	PING 8.8.8.7 (8.8.8.7) 56(84) bytes of data.
 	^C
 	--- 8.8.8.7 ping statistics ---
@@ -121,7 +176,7 @@ Linuxにはソフトウェアを一元管理しているパッケージマネー
 
 `sudo apt install apache2`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install apache2
+	ebi@ubuntu:~$ sudo apt install apache2
 	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
@@ -230,7 +285,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 `ps aux | grep apache`
 
-	ebi@ebi-virtual-machine:~$ sudo ps -aux | grep apache
+	ebi@ubuntu:~$ sudo ps -aux | grep apache
 	root       2590  0.0  0.4  73856  4588 ?        Ss   11:49   0:00 /usr/sbin/apache2 -k start
 	www-data   2592  0.0  0.4 821768  4428 ?        Sl   11:49   0:00 /usr/sbin/apache2 -k start
 	www-data   2593  0.0  0.4 821768  4428 ?        Sl   11:49   0:00 /usr/sbin/apache2 -k start
@@ -242,7 +297,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 ポート開放状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
-	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
+	ebi@ubuntu:~$ ss -ant | grep -i listen
 	LISTEN     0      128          *:22                       *:*
 	LISTEN     0      5      127.0.0.1:631                      *:*
 	LISTEN     0      128          *:5355                     *:*
@@ -253,7 +308,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
 
-	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
+	ebi@ubuntu:~$ ss -ant | grep -i listen
 	(略)
 	LISTEN     0      128         :::80                      :::*
 
@@ -272,7 +327,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 `sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql
+	ebi@ubuntu:~$ sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
 	状態情報を読み取っています... 完了
@@ -414,7 +469,7 @@ MySQLデータベースをインストールします。
 
 `sudo apt install mysql-common mysql-server mysql-client`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install mysql-common mysql-server mysql-client
+	ebi@ubuntu:~$ sudo apt install mysql-common mysql-server mysql-client
 	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
@@ -501,9 +556,10 @@ MySQLサーバが起動しているか確認してみます。プロセス一覧
 
 MySQLサーバへログインします。
 
-`mysql -uroot -pk@pp@ebi1000`
+`sudo mysql -uroot -pk@pp@ebi1000`
 
-	ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
+```
+	ebi@ubuntu:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
 	Welcome to the MySQL monitor.  Commands end with ; or \g.
 	Your MySQL connection id is 7
@@ -518,6 +574,7 @@ MySQLサーバへログインします。
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 	mysql>
+```
 
 ### MySQLにデータベースを追加
 
@@ -567,8 +624,10 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 - ユーザ名:`wp-user`
 - パスワード:`kabayaki3taro`
 
+```
 	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
 	Query OK, 0 rows affected (0.00 sec)
+```
 
 ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
 
@@ -712,6 +771,9 @@ VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Goo
 
 #### 練習
 
+  mysql>
+
+=======
 管理画面で「テーマ」をインストールして適用させてオリジナルサイトをつくってみてください。
 
 <img src="images/wp11.png" width="500">
