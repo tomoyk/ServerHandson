@@ -78,6 +78,26 @@ VMが起動してログインします。
 
 <img src="images/img05.png" width="500">
 
+### 日本語対応及び国内リポジトリに変更
+
+このままでは、日本語の対応が不安定だったり、aptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
+
+```
+wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+
+wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
+
+sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
+
+sudo apt update
+
+sudo apt dist-upgrade
+
+sudo apt install ubuntu-defaults-ja
+
+sudo systemctl reboot -i
+```
+
 ### ネットワークまわり
 
 #### IPアドレスの確認
