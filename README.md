@@ -83,6 +83,8 @@ VMが起動してログインします。
 このままでは、日本語の対応が不安定だったり、aptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
 
 ```
+echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
+
 wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 
 wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
@@ -104,7 +106,7 @@ sudo systemctl reboot -i
 
 IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
-	ebi@ebi-virtual-machine:~$ ip a
+	ebi@ubuntu:~$ ip a
 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 	    inet 127.0.0.1/8 scope host lo
@@ -136,7 +138,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
 次に`pingコマンド`を利用してネットワーク通信が行えるか確認します。ターミナルに`ping 8.8.8.8`と入力してEnterを押下します。終了するには`Ctrl + C`を押します。
 
-	ebi@ebi-virtual-machine:~$ ping 8.8.8.8
+	ebi@ubuntu:~$ ping 8.8.8.8
 	PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 	64 bytes from 8.8.8.8: icmp_seq=1 ttl=128 time=4.43 ms
 	64 bytes from 8.8.8.8: icmp_seq=2 ttl=128 time=4.78 ms
@@ -148,7 +150,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	5 packets transmitted, 5 received, 0% packet loss, time 4010ms
 	rtt min/avg/max/mdev = 3.987/4.515/5.061/0.376 ms
 
-	ebi@ebi-virtual-machine:~$ ping 8.8.8.7
+	ebi@ubuntu:~$ ping 8.8.8.7
 	PING 8.8.8.7 (8.8.8.7) 56(84) bytes of data.
 	^C
 	--- 8.8.8.7 ping statistics ---
@@ -174,7 +176,7 @@ Linuxにはソフトウェアを一元管理しているパッケージマネー
 
 `sudo apt install apache2`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install apache2
+	ebi@ubuntu:~$ sudo apt install apache2
 	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
@@ -283,7 +285,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 `ps aux | grep apache`
 
-	ebi@ebi-virtual-machine:~$ sudo ps -aux | grep apache
+	ebi@ubuntu:~$ sudo ps -aux | grep apache
 	root       2590  0.0  0.4  73856  4588 ?        Ss   11:49   0:00 /usr/sbin/apache2 -k start
 	www-data   2592  0.0  0.4 821768  4428 ?        Sl   11:49   0:00 /usr/sbin/apache2 -k start
 	www-data   2593  0.0  0.4 821768  4428 ?        Sl   11:49   0:00 /usr/sbin/apache2 -k start
@@ -295,7 +297,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 ポート開放状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
-	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
+	ebi@ubuntu:~$ ss -ant | grep -i listen
 	LISTEN     0      128          *:22                       *:*
 	LISTEN     0      5      127.0.0.1:631                      *:*
 	LISTEN     0      128          *:5355                     *:*
@@ -306,7 +308,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
 
-	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
+	ebi@ubuntu:~$ ss -ant | grep -i listen
 	(略)
 	LISTEN     0      128         :::80                      :::*
 
@@ -325,7 +327,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 `sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql
+	ebi@ubuntu:~$ sudo apt install libapache2-mod-php libapache2-mod-php7.1 php-common php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-readline php7.1-gd php7.1-xmlrpc php7.1-dev php7.1-mbstring php7.1-mysql
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
 	状態情報を読み取っています... 完了
@@ -467,7 +469,7 @@ MySQLデータベースをインストールします。
 
 `sudo apt install mysql-common mysql-server mysql-client`
 
-	ebi@ebi-virtual-machine:~$ sudo apt install mysql-common mysql-server mysql-client
+	ebi@ubuntu:~$ sudo apt install mysql-common mysql-server mysql-client
 	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
@@ -556,15 +558,14 @@ MySQLサーバへログインします。
 
 `sudo mysql -uroot -pk@pp@ebi1000`
 
-<<<<<<< HEAD
-  ebi@ebi-virtual-machine:~$ sudo mysql -uroot -pk@pp@ebi1000
+  ebi@ubuntu:~$ sudo mysql -uroot -pk@pp@ebi1000
   [sudo] ebi のパスワード:
   mysql: [Warning] Using a password on the command line interface can be insecure.
   Welcome to the MySQL monitor.  Commands end with ; or \g.
   Your MySQL connection id is 7
   Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
 =======
-	ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
+	ebi@ubuntu:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
 	Welcome to the MySQL monitor.  Commands end with ; or \g.
 	Your MySQL connection id is 7
@@ -635,7 +636,6 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 
 	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost';
 	Query OK, 0 rows affected (0.00 sec)
->>>>>>> upstream/master
 
 ### データベースのテーブルを確認
 
@@ -774,9 +774,8 @@ VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Goo
 
 #### 練習
 
-<<<<<<< HEAD
   mysql>
-  
+
 =======
 管理画面で「テーマ」をインストールして適用させてオリジナルサイトをつくってみてください。
 
@@ -837,6 +836,5 @@ WordPressによって、空だったデータベース`wordpress`のテーブル
 ## 6. まとめ
 
 サーバの構築を通じて、「サーバ」や「ネットワーク」の仕組みがどう変化しているかについて理解が深まれば幸いです。大切な視点は、各サーバが「何のため」に「何をしている」か理解することが大切です。
->>>>>>> upstream/master
 
 
