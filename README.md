@@ -39,10 +39,10 @@ Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペ�
 
 3. Ubuntuにログインするための認証情報を設定して下さい。ここで入力した情報でUbuntuの認証情報が設定されます。画像では以下の設定になっています。
 ```
-Full name :  ebi
-User name :  ebi
-Password  :  kappaebi1000
-Confirm   :  kappaebi1000
+    Full name :  ebi
+    User name :  ebi
+    Password  :  kappaebi1000
+    Confirm   :  kappaebi1000
 ```
 <img src="images/inst03.png" width="500">
 
@@ -83,21 +83,21 @@ VMが起動してログインします。
 このままでは、日本語の対応が不安定だったり、aptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
 
 ```
-echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
-
-wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
-
-wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
-
-sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
-
-sudo apt update
-
-sudo apt dist-upgrade
-
-sudo apt install ubuntu-defaults-ja
-
-sudo systemctl reboot -i
+    echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
+    
+    wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+    
+    wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
+    
+    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
+    
+    sudo apt update
+    
+    sudo apt dist-upgrade
+    
+    sudo apt install ubuntu-defaults-ja
+    
+    sudo systemctl reboot -i
 ```
 
 ### ネットワークまわり
@@ -558,13 +558,7 @@ MySQLサーバへログインします。
 
 `sudo mysql -uroot -pk@pp@ebi1000`
 
-  ebi@ubuntu:~$ sudo mysql -uroot -pk@pp@ebi1000
-  [sudo] ebi のパスワード:
-  mysql: [Warning] Using a password on the command line interface can be insecure.
-  Welcome to the MySQL monitor.  Commands end with ; or \g.
-  Your MySQL connection id is 7
-  Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
-=======
+```
 	ebi@ubuntu:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
 	Welcome to the MySQL monitor.  Commands end with ; or \g.
@@ -580,6 +574,7 @@ MySQLサーバへログインします。
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 	mysql>
+```
 
 ### MySQLにデータベースを追加
 
@@ -629,8 +624,10 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 - ユーザ名:`wp-user`
 - パスワード:`kabayaki3taro`
 
+```
 	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
 	Query OK, 0 rows affected (0.00 sec)
+```
 
 ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
 
