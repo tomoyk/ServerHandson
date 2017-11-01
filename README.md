@@ -147,7 +147,7 @@ Linuxにはソフトウェアを一元管理しているパッケージマネー
 	ebi@ebi-virtual-machine:~$ sudo apt install apache2
 	[sudo] ebi のパスワード: 
 	パッケージリストを読み込んでいます... 完了
-	依存関係ツリーを作成しています                
+	依存関係ツリーを作成しています
 	状態情報を読み取っています... 完了
 	以下の追加パッケージがインストールされます:
 	  apache2-bin apache2-data apache2-utils libapr1 libaprutil1
@@ -527,9 +527,10 @@ img
 
 MySQLサーバへログインします。
 
-`mysql -uroot -pk@pp@ebi1000`
+`sudo mysql -uroot -pk@pp@ebi1000`
 
-  ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
+  ebi@ebi-virtual-machine:~$ sudo mysql -uroot -pk@pp@ebi1000
+  [sudo] ebi のパスワード:
   mysql: [Warning] Using a password on the command line interface can be insecure.
   Welcome to the MySQL monitor.  Commands end with ; or \g.
   Your MySQL connection id is 7
@@ -544,5 +545,6 @@ MySQLサーバへログインします。
   Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
   mysql>
+  
 
 
