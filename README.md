@@ -2,97 +2,103 @@
 
 ## 1. はじめに
 
-この講座では, あらかじめ用意したVirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。
+この講座では, VirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。授業とは別にVMを用意しておくことをオススメします。
 
 ## 2. Linuxについて
 
-Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発された。Linuxのプログラムの特徴としてライセンス形態が挙げられる。Linuxのプログラムには`GPL(GNU General Public License)というライセンス形式が付与されている。これには以下の内容が含まれています。
+Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発されました。Linuxのプログラムの特徴としてライセンス形態が挙げられます。Linuxのプログラムには`GPL(GNU General Public License)というライセンス形式が付与されています。これには以下の内容が含まれています。
 
 > - プログラムを実行する自由
 > - ソースの改変の自由
 > - 利用・再配布の自由
 > - 改良したプログラムをリリースする権利
-> 
+>
 > (Linux標準教科書より引用)
 
 こうした自由な形態を採用した為、限られた組織や個人によって独占されることなく広く普及し発展しました。詳しいことは`書籍:Unix考古学`などに書かれています。
 
-## 3. サーバについて
+## 3. サーバの基本情報
 
 サーバとは不特定多数によるアクセスが可能なコンピュータ。
 
-// 説明を加える
+### 実験環境
 
-#### 実験環境
+- VMware Workstation Player 12.7
+- Ubuntu 17.10 x86_64
 
-- VMware Workstation Player 12.7 // 要検証
-- Lubuntu 17.10 x86_64
+### Ubuntu のインストール
+まずハンズオン用の環境を作るために、VMware PlayerにUbuntuをインストールしていきます。
 
-## 4. Webサーバの構築
+1. VMware Playerを起動して、右ペイン一番上の項目を選択し、仮想マシンウィザードを立ち上げて下さい。
 
-### 4.0 アジェンダ
+<img src="images/inst01.png" width="500">
 
-- VMを起動
-- ネットワーク設定の確認
-- Apacheのインストール
-- プロセスの確認
-- ポートの確認
-- ファイヤウォールの確認
+2. 「Use ISO image」からISOイメージを選択して「Next」をクリックして下さい。ISOイメージを選択することで自動的にOSが認識されVMの設定が最適化されます。
 
-### 4.1 VMの起動
+<img src="images/inst02.png" width="500">
 
-VMware Playerを起動して、配布したVMを立ち上げます。
+3. Ubuntuにログインするための認証情報を設定して下さい。ここで入力した情報でUbuntuの認証情報が設定されます。画像では以下の設定になっています。
+```
+Full name :  ebi
+User name :  ebi
+Password  :  kappaebi1000
+Confirm   :  kappaebi1000
+```
+<img src="images/inst03.png" width="500">
 
-img01
+4. 仮想マシンの名前と場所を設定します。名前は分かりやすいものを、場所は十分に空き容量があるボリュームに設定して下さい。
 
-VMが起動したら以下の資格情報でログインしてください。
+<img src="images/inst04.png" width="500">
 
-- UserName: ebi
-- Password: kappaebi1000
+5. 仮想マシンに接続する仮想ハードディスクのサイズを設定します。とりあえず20GBで大丈夫だと思いますのでこのまま次に進んで下さい。
 
-img02
+<img src="images/inst05.png" width="500">
 
-### 4.2 ネットワーク設定
+6. 仮想マシンに対する設定が完了しました。このまま「Finish」をクリックすることで自動的にUbuntuがインストールされ、VMware-toolsも自動的に入ります。
+
+<img src="images/inst06.png" width="500">
+
+
+### VMの起動
+
+VMware Playerを起動してVMを立ち上げます。
+
+<img src="images/img02.png" width="500">
+
+VMが起動してログインします。
+
+<img src="images/img01.png" width="500">
+
+
+左下のボタン（ランチャ）から`Terminal`を起動します
+
+<img src="images/img04.png" width="500">
+
+起動すると以下の画面が表示されます
+
+<img src="images/img05.png" width="500">
+
+### ネットワークまわり
 
 #### IPアドレスの確認
 
-IPアドレスを確認します。コマンドラインに`ifconfig`または`ip a`を入力します。
+IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
-	ebi@ebi-virtual-machine:~$ ifconfig
-	ens33: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-	        inet 192.168.223.154  netmask 255.255.255.0  broadcast 192.168.223.255
-	        inet6 fe80::a8dc:fd46:8a0b:d3e9  prefixlen 64  scopeid 0x20<link>
-	        ether 00:0c:29:90:d5:eb  txqueuelen 1000  (イーサネット)
-	        RX packets 80  bytes 24103 (24.1 KB)
-	        RX errors 0  dropped 0  overruns 0  frame 0
-	        TX packets 120  bytes 12064 (12.0 KB)
-	        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-	
-	lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-	        inet 127.0.0.1  netmask 255.0.0.0
-	        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-	        loop  txqueuelen 1000  (ローカルループバック)
-	        RX packets 108  bytes 7968 (7.9 KB)
-	        RX errors 0  dropped 0  overruns 0  frame 0
-	        TX packets 108  bytes 7968 (7.9 KB)
-	        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 	ebi@ebi-virtual-machine:~$ ip a
 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 	    inet 127.0.0.1/8 scope host lo
 	       valid_lft forever preferred_lft forever
-	    inet6 ::1/128 scope host 
+	    inet6 ::1/128 scope host
 	       valid_lft forever preferred_lft forever
 	2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
 	    link/ether 00:0c:29:90:d5:eb brd ff:ff:ff:ff:ff:ff
-	    inet 192.168.223.154/24 brd 192.168.223.255 scope global dynamic ens33
+	    inet 192.168.223.159/24 brd 192.168.223.255 scope global dynamic ens33
 	       valid_lft 1152sec preferred_lft 1152sec
-	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link 
+	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
-ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
-
-// 抽出した実行結果
+ここで`inet x.x.x.x (192.168.x.xや172.16.x.x)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
@@ -121,7 +127,7 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 	--- 8.8.8.8 ping statistics ---
 	5 packets transmitted, 5 received, 0% packet loss, time 4010ms
 	rtt min/avg/max/mdev = 3.987/4.515/5.061/0.376 ms
-	
+
 	ebi@ebi-virtual-machine:~$ ping 8.8.8.7
 	PING 8.8.8.7 (8.8.8.7) 56(84) bytes of data.
 	^C
@@ -130,7 +136,7 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 
 サーバからの応答があれば外部との通信が出来ていると判断できます。
 
-### 4.3 パッケージのインストール
+### パッケージのインストール
 
 #### パッケージマネージャについて
 
@@ -138,14 +144,18 @@ IPアドレスを確認します。コマンドラインに`ifconfig`または`i
 
 Linuxにはソフトウェアを一元管理しているパッケージマネージャという便利な仕組みがあります。この仕組みによってソフトウェアをパッケージという単位でコマンドを使って管理できるようになります。
 
-#### Apacheのインストール
+#### パッケージのインストール
+
+コマンド`sudo apt install [パッケージ名]`を入力することでパッケージがインストールされます。
+
+## 4. Webサーバの構築
 
 次にApacheというWebサーバソフトウェアをパッケージマネージャと利用してインストールします。ターミナルに以下のコマンドを打ち込みます。
 
 `sudo apt install apache2`
 
 	ebi@ebi-virtual-machine:~$ sudo apt install apache2
-	[sudo] ebi のパスワード: 
+	[sudo] ebi のパスワード:
 	パッケージリストを読み込んでいます... 完了
 	依存関係ツリーを作成しています
 	状態情報を読み取っています... 完了
@@ -263,16 +273,8 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 ### ポート状況の確認
 
-ポート開放状況は`netstat`か`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
+ポート開放状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
-	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
-	tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
-	tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN
-	tcp        0      0 0.0.0.0:5355            0.0.0.0:*               LISTEN
-	tcp6       0      0 :::22                   :::*                    LISTEN
-	tcp6       0      0 ::1:631                 :::*                    LISTEN
-	tcp6       0      0 :::5355                 :::*                    LISTEN
-	tcp6       0      0 :::80                   :::*                    LISTEN
 	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
 	LISTEN     0      128          *:22                       *:*
 	LISTEN     0      5      127.0.0.1:631                      *:*
@@ -284,9 +286,6 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
 
-	ebi@ebi-virtual-machine:~$ netstat -ant | grep -i listen
-	(略)
-	tcp6       0      0 :::80                   :::*                    LISTEN
 	ebi@ebi-virtual-machine:~$ ss -ant | grep -i listen
 	(略)
 	LISTEN     0      128         :::80                      :::*
@@ -382,7 +381,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	取得:41 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 debhelper all 10.7.2ubuntu2 [877 kB]
 	取得:42 http://jp.archive.ubuntu.com/ubuntu artful/main amd64 libfakeroot amd64 1.21-1ubuntu2 [25.9 kB]
 	php7.1-opcache (7.1.8-1ubuntu1) を設定しています ...
-	
+
 	Creating config file /etc/php/7.1/mods-available/opcache.ini with new version
 	binutils-x86-64-linux-gnu (2.29.1-4ubuntu1) を設定しています ...
 	php-xml (1:7.1+54ubuntu1) を設定しています ...
@@ -390,12 +389,12 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	update-alternatives: /usr/bin/php (php) を提供するために自動モードで /usr/bin/php7.1 を使います
 	update-alternatives: /usr/bin/phar (phar) を提供するために自動モードで /usr/bin/phar7.1 を使います
 	update-alternatives: /usr/bin/phar.phar (phar.phar) を提供するために自動モードで /usr/bin/phar.phar7.1 を使います
-	
+
 	Creating config file /etc/php/7.1/cli/php.ini with new version
 	php-pear (1:1.10.5+submodules+notgz-1) を設定しています ...
 	binutils (2.29.1-4ubuntu1) を設定しています ...
 	libapache2-mod-php7.1 (7.1.8-1ubuntu1) を設定しています ...
-	
+
 	Creating config file /etc/php/7.1/apache2/php.ini with new version
 	Module mpm_event disabled.
 	Enabling module mpm_prefork.
@@ -442,109 +441,382 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 edit confs
 
-### MySQLデータベースのインストール
+## 5. MySQLデータベースのインストール
 
 MySQLデータベースをインストールします。
 
 `sudo apt install mysql-common mysql-server mysql-client`
 
-  ebi@ebi-virtual-machine:~$ sudo apt install mysql-common mysql-server mysql-client
-  [sudo] ebi のパスワード:
-  パッケージリストを読み込んでいます... 完了
-  依存関係ツリーを作成しています
-  状態情報を読み取っています... 完了
-  mysql-common はすでに最新バージョン (5.8+1.0.2ubuntu1) です。
-  mysql-common は手動でインストールしたと設定されました。
-  以下の追加パッケージがインストールされます:
-    libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-template-perl mysql-client-5.7 mysql-client-core-5.7
-    mysql-server-5.7 mysql-server-core-5.7
-  提案パッケージ:
-    libipc-sharedcache-perl mailx tinyca
-  以下のパッケージが新たにインストールされます:
-    libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-template-perl mysql-client mysql-client-5.7
-    mysql-client-core-5.7 mysql-server mysql-server-5.7 mysql-server-core-5.7
-  アップグレード: 0 個、新規インストール: 12 個、削除: 0 個、保留: 5 個。
-  20.6 MB のアーカイブを取得する必要があります。
-  この操作後に追加で 161 MB のディスク容量が消費されます。
-  続行しますか? [Y/n] y
+	ebi@ebi-virtual-machine:~$ sudo apt install mysql-common mysql-server mysql-client
+	[sudo] ebi のパスワード:
+	パッケージリストを読み込んでいます... 完了
+	依存関係ツリーを作成しています
+	状態情報を読み取っています... 完了
+	mysql-common はすでに最新バージョン (5.8+1.0.2ubuntu1) です。
+	mysql-common は手動でインストールしたと設定されました。
+	以下の追加パッケージがインストールされます:
+	  libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-mplate-perl mysql-client-5.7 mysql-client-core-5.7
+	  mysql-server-5.7 mysql-server-core-5.7
+	提案パッケージ:
+	  libipc-sharedcache-perl mailx tinyca
+	以下のパッケージが新たにインストールされます:
+	  libaio1 libcgi-fast-perl libcgi-pm-perl libevent-core-2.1-6 libfcgi-perl libhtml-mplate-perl mysql-client mysql-client-5.7
+	  mysql-client-core-5.7 mysql-server mysql-server-5.7 mysql-server-core-5.7
+	アップグレード: 0 個、新規インストール: 12 個、削除: 0 個、保留: 5 個。
+	20.6 MB のアーカイブを取得する必要があります。
+	この操作後に追加で 161 MB のディスク容量が消費されます。
+ 	続行しますか? [Y/n] y
 
 確認が出るので`y`を入力して`Enter`を押します.
 
-img
+<img src="images/img03.png" width="500">
 
 パスワード入力を求められるので任意のパスワードを設定します。ここでは`k@pp@ebi1000`と設定しました。
 
-  (略)
-  以前に未選択のパッケージ libfcgi-perl を選択しています。
-  .../07-libfcgi-perl_0.78-2build1_amd64.deb を展開する準備をしています ...
-  libfcgi-perl (0.78-2build1) を展開しています...
-  以前に未選択のパッケージ libcgi-fast-perl を選択しています。
-  .../08-libcgi-fast-perl_1%3a2.12-1_all.deb を展開する準備をしています ...
-  libcgi-fast-perl (1:2.12-1) を展開しています...
-  以前に未選択のパッケージ libhtml-template-perl を選択しています。
-  .../09-libhtml-template-perl_2.95-2_all.deb を展開する準備をしています ...
-  libhtml-template-perl (2.95-2) を展開しています...
-  以前に未選択のパッケージ mysql-client を選択しています。
-  .../10-mysql-client_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
-  mysql-client (5.7.20-0ubuntu0.17.10.1) を展開しています...
-  以前に未選択のパッケージ mysql-server を選択しています。
-  .../11-mysql-server_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
-  mysql-server (5.7.20-0ubuntu0.17.10.1) を展開しています...
-  libevent-core-2.1-6:amd64 (2.1.8-stable-4) を設定しています ...
-  ureadahead (0.100.0-20) のトリガを処理しています ...
-  libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
-  libaio1:amd64 (0.3.110-4) を設定しています ...
-  systemd (234-2ubuntu12) のトリガを処理しています ...
-  libcgi-pm-perl (4.36-1) を設定しています ...
-  man-db (2.7.6.1-2) のトリガを処理しています ...
-  mysql-client-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  libfcgi-perl (0.78-2build1) を設定しています ...
-  libhtml-template-perl (2.95-2) を設定しています ...
-  mysql-server-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  libcgi-fast-perl (1:2.12-1) を設定しています ...
-  mysql-client-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  mysql-client (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  mysql-server-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  update-alternatives: /etc/mysql/my.cnf (my.cnf) を提供するために自動モードで /etc/mysql/mysql.cnf を使います
-  Renaming removed key_buffer and myisam-recover options (if present)
-  Created symlink /etc/systemd/system/multi-user.target.wants/mysql.service → /lib/systemd/system/mysql.service.
-  mysql-server (5.7.20-0ubuntu0.17.10.1) を設定しています ...
-  libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
-  ureadahead (0.100.0-20) のトリガを処理しています ...
-  systemd (234-2ubuntu12) のトリガを処理しています ...
+	(略)
+	以前に未選択のパッケージ libfcgi-perl を選択しています。
+	.../07-libfcgi-perl_0.78-2build1_amd64.deb を展開する準備をしています ...
+	libfcgi-perl (0.78-2build1) を展開しています...
+	以前に未選択のパッケージ libcgi-fast-perl を選択しています。
+	.../08-libcgi-fast-perl_1%3a2.12-1_all.deb を展開する準備をしています ...
+	libcgi-fast-perl (1:2.12-1) を展開しています...
+	以前に未選択のパッケージ libhtml-template-perl を選択しています。
+	.../09-libhtml-template-perl_2.95-2_all.deb を展開する準備をしています ...
+	libhtml-template-perl (2.95-2) を展開しています...
+	以前に未選択のパッケージ mysql-client を選択しています。
+	.../10-mysql-client_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
+	mysql-client (5.7.20-0ubuntu0.17.10.1) を展開しています...
+	以前に未選択のパッケージ mysql-server を選択しています。
+	.../11-mysql-server_5.7.20-0ubuntu0.17.10.1_all.deb を展開する準備をしています ...
+	mysql-server (5.7.20-0ubuntu0.17.10.1) を展開しています...
+	libevent-core-2.1-6:amd64 (2.1.8-stable-4) を設定しています ...
+	ureadahead (0.100.0-20) のトリガを処理しています ...
+	libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
+	libaio1:amd64 (0.3.110-4) を設定しています ...
+	systemd (234-2ubuntu12) のトリガを処理しています ...
+	libcgi-pm-perl (4.36-1) を設定しています ...
+	man-db (2.7.6.1-2) のトリガを処理しています ...
+	mysql-client-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	libfcgi-perl (0.78-2build1) を設定しています ...
+	libhtml-template-perl (2.95-2) を設定しています ...
+	mysql-server-core-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	libcgi-fast-perl (1:2.12-1) を設定しています ...
+	mysql-client-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	mysql-client (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	mysql-server-5.7 (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	update-alternatives: /etc/mysql/my.cnf (my.cnf) を提供するために自動モードで /etc/mysql/mysql.cnf を使います
+	Renaming removed key_buffer and myisam-recover options (if present)
+	Created symlink /etc/systemd/system/multi-user.target.wants/mysql.service → /lib/systemd/stem/mysql.service.
+	mysql-server (5.7.20-0ubuntu0.17.10.1) を設定しています ...
+	libc-bin (2.26-0ubuntu2) のトリガを処理しています ...
+	ureadahead (0.100.0-20) のトリガを処理しています ...
+	systemd (234-2ubuntu12) のトリガを処理しています ...
 
-インストールが完了したら、データベースサーバに接続します。
+	インストールが完了したら、データベースサーバに接続します。
 
-データベース・サーバが起動しているかポート状況を確認します。
+	データベース・サーバが起動しているかポート状況を確認します。
 
 #### 練習
 
-データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみましょう。
+データベース・サーバはTCP 3306番で起動します。サーバが起動しているか確認してみよう。
 
-ヒント: `netstatコマンド`, `ssコマンド`
+ヒント: `ssコマンド`
 
-### MySQLの設定
+#### 練習2
+
+MySQLサーバが起動しているか確認してみます。プロセス一覧には`mysql`という文字列が含まれています。
+
+ヒント: `psコマンド`
+
+---
+
+### MySQLへログイン
 
 MySQLサーバへログインします。
 
 `sudo mysql -uroot -pk@pp@ebi1000`
 
+<<<<<<< HEAD
   ebi@ebi-virtual-machine:~$ sudo mysql -uroot -pk@pp@ebi1000
   [sudo] ebi のパスワード:
   mysql: [Warning] Using a password on the command line interface can be insecure.
   Welcome to the MySQL monitor.  Commands end with ; or \g.
   Your MySQL connection id is 7
   Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
+=======
+	ebi@ebi-virtual-machine:~$ mysql -uroot -pk@pp@ebi1000
+	mysql: [Warning] Using a password on the command line interface can be insecure.
+	Welcome to the MySQL monitor.  Commands end with ; or \g.
+	Your MySQL connection id is 7
+	Server version: 5.7.20-0ubuntu0.17.10.1 (Ubuntu)
 
-  Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+	Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
 
-  Oracle is a registered trademark of Oracle Corporation and/or its
-  affiliates. Other names may be trademarks of their respective
-  owners.
+	Oracle is a registered trademark of Oracle Corporation and/or its
+	affiliates. Other names may be trademarks of their respective
+	owners.
 
-  Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
+	mysql>
+
+### MySQLにデータベースを追加
+
+存在しているデータベースをコマンド`show databases;`で表示します。
+
+	mysql> show databases;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	+--------------------+
+	4 rows in set (0.01 sec)
+	mysql>
+
+WordPressで使用するデータベースを作成します。`wordpress`という名前のデータベースを作成します。
+
+	mysql> create database wordpress;
+	mysql>
+
+#### 練習
+
+`wordpress`というデータベースが作成されているか確認してみましょう。
+
+ヒント: `show ???`というコマンド使う。
+
+	mysql> show ???;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	| wordpress          |
+	+--------------------+
+	5 rows in set (0.02 sec)
+
+---
+
+### MySQLのユーザを追加
+
+MySQLのユーザ`wp-user`を追加します。`root`を使用することも出来ますが、アカウントが悪用された時の影響範囲を小さくするために新たなユーザを追加しています。
+
+- ユーザ名:`wp-user`
+- パスワード:`kabayaki3taro`
+
+	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
+	Query OK, 0 rows affected (0.00 sec)
+
+ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
+
+	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost';
+	Query OK, 0 rows affected (0.00 sec)
+>>>>>>> upstream/master
+
+### データベースのテーブルを確認
+
+データベース`wordpress`の中身であるテーブルを確認してみます。
+
+まず、データベース`wordpress`を選択します。
+
+	mysql> use wordpress;
+	Database changed
+	mysql>
+
+次に、テーブルの一覧を表示します。
+
+	mysql> show tables;
+	Empty set (0.03 sec)
+	mysql>
+
+実行結果から、まだ何もテーブルが作成されていないことが確認できます。
+
+一度、MySQLから抜けます。
+
+	mysql> quit
+	Bye
+
+## 6. WordPressのインストール
+
+### WordPressについて
+
+WordPressはオープンソース(ソースコードが公開されている)のブログシステムです。カスタマイズすることでWebサイトとして使用することも出来ます。
+
+安倍首相のWebサイト、学内サイト、緊急連絡サイトなど身近なWebサイトでも使用されています。
+
+### WordPressのダウンロード
+
+WordPressの公式サイトへアクセスし、WordPressをダウンロードします。次のリンクをブラウザで開きます。
+
+[日本語 — WordPress](https://ja.wordpress.org/)
+
+サイトの「WordPress 4.8.2 をダウンロード」にカーソルをおき、`右クリック -> リンクのアドレスをコピー`を選択します。
+
+適当なディレクトリに移動し、Virtual Machineのターミナルで`wget `と入力し、`右クリック -> ペースト`からコピーしたURLを貼り付けます。
+
+`wget https://ja.wordpress.org/wordpress-4.8.2-ja.zip`
+
+実行したコマンドは上記です。`wget`コマンドは指定したURLのファイルをダウンロードするコマンドです。つまり、WordPressのプログラムをWebからダウンロードしました。
+
+### WordPressの展開と設置
+
+ダウンロードしたファイル`wordpress-4.8.2-ja.zip`を`unzip`コマンドで解凍します。
+
+	ebi@ubuntu:~$ unzip wordpress-4.8.2-ja.zip
+	Archive:  wordpress-4.8.2-ja.zip
+	   creating: wordpress/
+	  inflating: wordpress/wp-trackback.php
+	   creating: wordpress/wp-admin/
+	  inflating: wordpress/wp-admin/media-upload.php
+	  inflating: wordpress/wp-admin/install-helper.php
+	  inflating: wordpress/wp-admin/ms-users.php
+	  inflating: wordpress/wp-admin/menu-header.php
+	  inflating: wordpress/wp-admin/update.php
+	  inflating: wordpress/wp-admin/plugin-install.php
+	  inflating: wordpress/wp-admin/theme-editor.php
+	   creating: wordpress/wp-admin/images/
+		(略)
+	  inflating: wordpress/wp-settings.php
+	  inflating: wordpress/wp-cron.php
+	  inflating: wordpress/wp-login.php
+	  inflating: wordpress/wp-activate.php
+	  inflating: wordpress/license.txt
+	  inflating: wordpress/wp-signup.php
+	  inflating: wordpress/index.php
+	  inflating: wordpress/wp-mail.php
+	  inflating: wordpress/wp-config-sample.php
+	  inflating: wordpress/wp-comments-post.php
+
+---
+
+展開すると`wordpress`というディレクトリが存在します。このディレクトリを`/var/www/`へ移動します。
+
+`sudo mv wordpress/ /var/www/html/`
+
+続いて`/var/www/html/`へ移動します。
+
+`cd /var/www/html`
+
+ファイルのパーミッションを確認します。
+
+#### 練習
+
+コマンドを使ってファイルのパーミッションをチェックしてみましょう。また、`index.html`の所有者を確認してみましょう。
+
+ヒント: `ls`コマンド
+
+---
+
+ディレクトリ`wordpress`の所有者を`ebi`から`www-data`へ変更します。`-R`でディレクトリ内にあるファイルやディレクトリを再帰的に変更します。
+
+`sudo chown -R www-data: wordpress/`
+
+### Webブラウザからアクセス
+
+VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Google ChromeやFirefox)を起動します。
+
+ブラウザのアドレス欄へ `http://IPアドレス/wordpresss/`　を入力してアクセスします。
+
+<img src="images/wp1.png" width="500">
+
+ページに表示される「さあ、始めましょう」をクリックします。
+
+<img src="images/wp3.png" width="500">
+
+フォームに上記内容を入力します。
+
+<img src="images/wp4.png" width="500">
+
+「インストール実行」をクリックします。
+
+<img src="images/wp6.png" width="500">
+
+サイト情報を好きなように設定します。ユーザ名とパスワードは別途、メモしてください。メールアドレスは適当なアドレスで良いです。入力後、「WordPressをインストール」をクリックします。
+
+- サイト名: りなっくす
+- ユーザ名: kabukiage
+- パスワード: 4KM7a*xQNF2IBJctAG
+- メールアドレス: a@b.com
+
+<img src="images/wp8.png" width="500">
+
+インストールに成功すると上記画面が表示されます。「ログイン」をクリックするとログイン画面に移動します。
+
+<img src="images/wp9.png" width="500">
+
+さきほど設定したパスワードとユーザ名を入力し「ログイン」をクリックします。ログインすると管理画面が表示されます。左上にあるサイト表示から構築したサイトを見ることができます。
+
+<img src="images/wp10.png" width="500">
+
+#### 練習
+
+<<<<<<< HEAD
   mysql>
   
+=======
+管理画面で「テーマ」をインストールして適用させてオリジナルサイトをつくってみてください。
+
+<img src="images/wp11.png" width="500">
+
+
+### MySQLデータベースを確認
+
+WordPressによって、空だったデータベース`wordpress`のテーブルがどう変化しているか確認します。
+
+	mysql> show databases;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	| wordpress          |
+	+--------------------+
+	5 rows in set (0.02 sec)
+
+	mysql> use wordpress;
+	Reading table information for completion of table and column names
+	You can turn off this feature to get a quicker startup with -A
+
+	Database changed
+
+	mysql> show tables;
+	+-----------------------+
+	| Tables_in_wordpress   |
+	+-----------------------+
+	| wp_commentmeta        |
+	| wp_comments           |
+	| wp_links              |
+	| wp_options            |
+	| wp_postmeta           |
+	| wp_posts              |
+	| wp_term_relationships |
+	| wp_term_taxonomy      |
+	| wp_termmeta           |
+	| wp_terms              |
+	| wp_usermeta           |
+	| wp_users              |
+	+-----------------------+
+	12 rows in set (0.00 sec)
+
+データベース`wordpress`のテーブル`wp_users`の中身は以下のコマンド確認できます。
+
+	mysql> select * from wp_users;
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	| ID | user_login | user_pass                          | user_nicename | user_email | user_url | user_registered     | user_activation_key | user_status | display_name |
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	|  1 | kabukiage  | $P$BHrhfHenRfBgNwayaCck.GKddKzwK11 | kabukiage     | a@b.com    |          | 2017-10-31 13:06:13 |                     |           0 | kabukiage    |
+	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
+	1 row in set (0.00 sec)
+
+## 6. まとめ
+
+サーバの構築を通じて、「サーバ」や「ネットワーク」の仕組みがどう変化しているかについて理解が深まれば幸いです。大切な視点は、各サーバが「何のため」に「何をしている」か理解することが大切です。
+>>>>>>> upstream/master
 
 
