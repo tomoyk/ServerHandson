@@ -45,6 +45,19 @@ VMが起動してログインします。
 
 <img src="images/img05.png" width="500">
 
+### 日本語対応及び国内リポジトリに変更
+
+このままでは、日本語の対応が不安定であったりaptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
+
+    echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
+    wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+    wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
+    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list    
+    sudo apt update
+    sudo apt dist-upgrade    
+    sudo apt install ubuntu-defaults-ja
+    sudo systemctl reboot -i
+
 ### ネットワークまわり
 
 #### IPアドレスの確認
@@ -65,7 +78,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
-ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
+ここで`inet x.x.x.x (192.168.x.xや)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
@@ -404,10 +417,6 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 - php7.1-mbstring
 - php7.1-mysql
 
-### PHPの設定
-
-edit confs
-
 ## 5. MySQLデータベースのインストール
 
 MySQLデータベースをインストールします。
@@ -501,7 +510,7 @@ MySQLサーバが起動しているか確認してみます。プロセス一覧
 
 MySQLサーバへログインします。
 
-`mysql -uroot -pk@pp@ebi1000`
+`sudo mysql -uroot -pk@pp@ebi1000`
 
 	ebi@ubuntu:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
@@ -774,4 +783,36 @@ WordPressによって、空だったデータベース`wordpress`のテーブル
 
 サーバの構築を通じて、「サーバ」や「ネットワーク」の仕組みがどう変化しているかについて理解が深まれば幸いです。大切な視点は、各サーバが「何のため」に「何をしている」か理解することが大切です。
 
+**(注) 以下は, `pana_kuma`氏の主観が含まれています。**
+
+---
+
+## 8. ちょっと小話
+最近、「ApacheじゃなくてNginx(エンジンエックス)のほうがいい」というのをよく聞くと思います。ではなにが良いのかってことでNginxとApacheの違いを簡単に説明していきたいと思います。
+
+#### Apache
+ApacheはHTTPに特化したサーバーで、webサーバーとしての機能が豊富に用意してあります。またmodをインストールすることで機能を簡単に追加することができます。今回もPHPを使うために`libapache2-mod-php`をインストールしました。
+
+Apacheはプロセス駆動型で一つリクエストに対し一つのプロセスを割り当てて処理を行います。そのため大量のアクセスが同時に来た場合、プロセスも大量に起動することになり、最悪C10Kと呼ばれるプロセス番号が足らなくなる現象が発生します(UNIX系OSだと最大32767)。またPHPなどの処理もApacheのプロセスで実行されるため、動的サイトの動作が重くなる傾向があります。
+
+#### Nginx
+NginxはApacheで述べた問題を解決することを目標に作られたもので、Webサーバーとしての機能だけでなく、リバースプロキシとして動作したりなど様々な機能がありますが、機能追加をするときにはソースからコンパイルしなおさなければなりません(HTTP/2やTLSv1.3に対応させるなど...)
+
+Nginxではプロセス数はCPUのコア数と同等で、それぞれのプロセスの中でループ処理をまわし、キューに溜まったイベントをしていく方式(イベントループ)です。
+
+またPHPなどの処理を外部に投げることにより、処理の高速化とNginxプロセスの肥大化を抑制しています。
+
+##### 結局どっちがいいのか
+
+使用用途による
+
+- 静的なサイトでアクセス多数    ->     Apache
+- 動的なサイトでアクセス多数    ->     Nginx
+- アクセス少数                  ->     どっちでも変わらない
+
+まぁ気にしなくて大丈夫
+
+動的サイト(WordPressとか)を高速にしたいならNginx
+
+簡単にサッサと建てたいならApache
 
