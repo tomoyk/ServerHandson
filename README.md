@@ -47,15 +47,21 @@ VMが起動してログインします。
 
 ### 日本語対応及び国内リポジトリに変更
 
-このままでは、日本語の対応が不安定であったりaptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
+このままでは、日本語の対応が不安定であり、aptコマンドの参照するサーバーがアメリカであることから、パッケージをインストールする時に若干時間がかかります。 そのため、日本で使うのに適した設定に変更します。
+
+なお、これらの処理はスクリプトを作成してあります。ターミナルに以下のコマンドを入力して実行してください。
+
+`wget -q -O - https://raw.githubusercontent.com/tomoyk/ServerHandson/master/setup.bash | bash`
+
+(参考) スクリプト内部で実行している処理は以下です。
 
     echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
     wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
     wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
     sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list    
-    sudo apt update
-    sudo apt dist-upgrade    
-    sudo apt install ubuntu-defaults-ja
+    sudo apt update -y
+    sudo apt dist-upgrade -y
+    sudo apt install -y ubuntu-defaults-ja
     sudo systemctl reboot -i
 
 ### ネットワークまわり
@@ -78,7 +84,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
-ここで`inet x.x.x.x (192.168.x.xや)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
+ここで`192.168.x.x`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
