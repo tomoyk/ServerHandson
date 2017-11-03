@@ -10,11 +10,11 @@ echo "==================== ADD APT-SOUCES ===================="
 sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
 
 echo "==================== UPDATE OS AND PACKAGES ===================="
-sudo apt update
-sudo apt dist-upgrade
+sudo apt update -y
+sudo apt dist-upgrade -y
 
 echo "==================== INSTALL JAPANESE-PACKAGES ===================="
-sudo apt install ubuntu-defaults-ja
+sudo apt install -y ubuntu-defaults-ja
 
 echo "==================== FINISHED ===================="
 echo "--> The setup was finished."
