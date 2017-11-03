@@ -47,25 +47,16 @@ VMが起動してログインします。
 
 ### 日本語対応及び国内リポジトリに変更
 
-このままでは、日本語の対応が不安定だったり、aptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
+このままでは、日本語の対応が不安定であったりaptのサーバーがアメリカの設定でパッケージをインストールする時に若干時間がかかるので日本で使うのに適した設定にします。
 
-```
     echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
-    
     wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
-    
     wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
-    
-    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list
-    
+    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list    
     sudo apt update
-    
-    sudo apt dist-upgrade
-    
+    sudo apt dist-upgrade    
     sudo apt install ubuntu-defaults-ja
-    
     sudo systemctl reboot -i
-```
 
 ### ネットワークまわり
 
@@ -87,7 +78,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 	    inet6 fe80::a8dc:fd46:8a0b:d3e9/64 scope link
 	       valid_lft forever preferred_lft forever
 
-ここで`inet x.x.x.x (192.168.x.xや172.16.x.x)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
+ここで`inet x.x.x.x (192.168.x.xや)`という文字列が見つかります。これがローカルネットワークにおけるIPアドレスです。
 
 ローカルネットワークのIPアドレスは国際標準規格`RFC1918`によって下記の範囲で定められています。
 
@@ -426,10 +417,6 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 - php7.1-mbstring
 - php7.1-mysql
 
-### PHPの設定
-
-edit confs
-
 ## 5. MySQLデータベースのインストール
 
 MySQLデータベースをインストールします。
@@ -525,7 +512,6 @@ MySQLサーバへログインします。
 
 `sudo mysql -uroot -pk@pp@ebi1000`
 
-```
 	ebi@ubuntu:~$ mysql -uroot -pk@pp@ebi1000
 	mysql: [Warning] Using a password on the command line interface can be insecure.
 	Welcome to the MySQL monitor.  Commands end with ; or \g.
@@ -541,7 +527,6 @@ MySQLサーバへログインします。
 	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 	mysql>
-```
 
 ### MySQLにデータベースを追加
 
@@ -591,10 +576,10 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 - ユーザ名:`wp-user`
 - パスワード:`kabayaki3taro`
 
-```
+以下のコマンドでアカウントを追加します。
+
 	mysql> create user 'wp-user'@'localhost' identified by 'kabayaki3taro';
 	Query OK, 0 rows affected (0.00 sec)
-```
 
 ユーザ`wp-user`にデータベース`wordpress`へのフルアクセス権を付与します。
 
@@ -738,7 +723,6 @@ VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Goo
 
 #### 練習
 
-=======
 管理画面で「テーマ」をインストールして適用させてオリジナルサイトをつくってみてください。
 
 <img src="images/wp11.png" width="500">
@@ -795,11 +779,15 @@ WordPressによって、空だったデータベース`wordpress`のテーブル
 	+----+------------+------------------------------------+---------------+------------+----------+---------------------+---------------------+-------------+--------------+
 	1 row in set (0.00 sec)
 
-## 6. まとめ
+## 7. まとめ
 
 サーバの構築を通じて、「サーバ」や「ネットワーク」の仕組みがどう変化しているかについて理解が深まれば幸いです。大切な視点は、各サーバが「何のため」に「何をしている」か理解することが大切です。
 
-## 7. ちょっと小話
+**(注) 以下は, `pana_kuma`氏の主観が含まれています。**
+
+---
+
+## 8. ちょっと小話
 最近、「ApacheじゃなくてNginx(エンジンエックス)のほうがいい」というのをよく聞くと思います。ではなにが良いのかってことでNginxとApacheの違いを簡単に説明していきたいと思います。
 
 #### Apache
@@ -827,3 +815,4 @@ Nginxではプロセス数はCPUのコア数と同等で、それぞれのプロ
 動的サイト(WordPressとか)を高速にしたいならNginx
 
 簡単にサッサと建てたいならApache
+
