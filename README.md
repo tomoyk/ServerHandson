@@ -10,7 +10,7 @@
 
 ## 2. Linuxについて
 
-Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発されました。Linuxのプログラムの特徴としてライセンス形態が挙げられます。Linuxのプログラムには`GPL(GNU General Public License)というライセンス形式が付与されています。これには以下の内容が含まれています。
+Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発されました。Linuxのプログラムの特徴としてライセンス形態が挙げられます。Linuxのプログラムには`GPL(GNU General Public License)`というライセンス形式が付与されています。これには以下の内容が含まれています。
 
 > - プログラムを実行する自由
 > - ソースの改変の自由
@@ -62,7 +62,7 @@ VMが起動してログインします。
     echo "export LANG=ja_JP.UTF-8" >> $HOME/.bashrc
     wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
     wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
-    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list    
+    sudo wget https://www.ubuntulinux.jp/sources.list.d/artful.list -O /etc/apt/sources.list.d/ubuntu-ja.list 
     sudo apt update -y
     sudo apt dist-upgrade -y
     sudo apt install -y ubuntu-defaults-ja
