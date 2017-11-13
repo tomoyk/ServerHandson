@@ -8,6 +8,10 @@
 
 この講座では, VirtualMachineを使って演習を行います。必ずVMWare環境を用意してください。授業とは別にVMを用意しておくことをオススメします。
 
+仮想環境の準備についてはこちらを参照下さい
+
+[仮想環境の準備(VMwareにUbuntuをインストール)](./vm-install.md)
+
 ## 2. Linuxについて
 
 Linuxとは当時、大学生であったLinus Torvaldsが開発したOS(オペレーティングシステム)です。UNIX互換のOSとして開発されました。Linuxのプログラムの特徴としてライセンス形態が挙げられます。Linuxのプログラムには`GPL(GNU General Public License)`というライセンス形式が付与されています。これには以下の内容が含まれています。
@@ -100,7 +104,7 @@ IPアドレスを確認します。ターミナルに`ip a`を入力します。
 
 参考: [プライベート網のアドレス割当(RFC 1918) - JPNIC](https://www.nic.ad.jp/ja/translation/rfc/1918.html)
 
-今回使ったNAT設定は、仮想マシン(Virtual Machine)からのパケットを実機(Windows)でアドレスやポート変換して外部と通信します。
+今回使ったNAT設定は、仮想マシン(Virtual Machine)からのパケットをホストでアドレスやポート変換して外部と通信します。
 
 #### 疎通の確認
 
@@ -261,9 +265,9 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 
 表示された結果の1番左が`プロセスが実行されたユーザ`、左から2番目が`プロセスID`、一番右が`プロセスの実行内容(コマンド)`をそれぞれ表しています。これでApacheのプロセスが起動していることが確認できます。
 
-### ポート状況の確認
+### ポート待受の確認
 
-ポート開放状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
+ポート待受状況は`ss`を使って確認します。`| grep -i xxx`の部分で大文字小文字の区別なく`xxx`という文字列を検索します。
 
 	ebi@ubuntu:~$ ss -ant | grep -i listen
 	LISTEN     0      128          *:22                       *:*
@@ -274,7 +278,7 @@ Apacheのインストールが終わるとApacheは自動で起動します。�
 	LISTEN     0      128         :::5355                    :::*
 	LISTEN     0      128         :::80                      :::*
 
-以下の行を見ることで`TCP 80番ポート`が開放されていると分かります。
+以下の行を見ることで`TCP 80番ポート`が接続を待ち受けていると分かります。
 
 	ebi@ubuntu:~$ ss -ant | grep -i listen
 	(略)
@@ -596,6 +600,12 @@ MySQLのユーザ`wp-user`を追加します。`root`を使用することも出
 	mysql> grant all privileges on wordpress.* to 'wp-user'@'localhost';
 	Query OK, 0 rows affected (0.00 sec)
 
+アカウントの追加と権限の付与は一つのコマンドでもできます。
+
+	mysql> grant all privileges on wordpress.* to wp-user@localhost identified by 'kabayaki3taro';
+	Query OK, 0 rows affected (0.00 sec)
+
+
 ### データベースのテーブルを確認
 
 データベース`wordpress`の中身であるテーブルを確認してみます。
@@ -672,7 +682,7 @@ WordPressの公式サイトへアクセスし、WordPressをダウンロード�
 
 ---
 
-展開すると`wordpress`というディレクトリが存在します。このディレクトリを`/var/www/`へ移動します。
+展開すると`wordpress`というディレクトリが存在します。このディレクトリを`/var/www/html/`へ移動します。
 
 `sudo mv wordpress/ /var/www/html/`
 
@@ -690,13 +700,13 @@ WordPressの公式サイトへアクセスし、WordPressをダウンロード�
 
 ---
 
-ディレクトリ`wordpress`の所有者を`ebi`から`www-data`へ変更します。`-R`でディレクトリ内にあるファイルやディレクトリを再帰的に変更します。
+ディレクトリ`wordpress`の所有者を`ebi`からApacheの実行ユーザーである`www-data`へ変更します。`-R`でディレクトリ内にあるファイルやディレクトリを再帰的に変更します。
 
 `sudo chown -R www-data: wordpress/`
 
 ### Webブラウザからアクセス
 
-VMのIPアドレスを確認します。ホスト(Windows)でWebブラウザ(Google ChromeやFirefox)を起動します。
+VMのIPアドレスを確認し、ホスト(Windows)でWebブラウザ(Google ChromeやFirefox)を起動します。
 
 ブラウザのアドレス欄へ `http://IPアドレス/wordpresss/`　を入力してアクセスします。
 
@@ -805,9 +815,9 @@ WordPressによって、空だったデータベース`wordpress`のテーブル
 そこで、以下ではNginxとApacheの違いを簡単に説明していきたいと思います。
 
 #### Apache
-ApacheはHTTPに特化したサーバーで、webサーバーとしての機能が豊富に用意してあります。またmodをインストールすることで機能を簡単に追加することができます。今回もPHPを使うために`libapache2-mod-php`をインストールしました。
+ApacheはHTTPに特化したサーバーで、webサーバーとしての機能が豊富に用意してあります。またモジュールをインストールすることで機能を簡単に追加することができます。今回もPHPを使うために`libapache2-mod-php`をインストールしました。
 
-Apacheはプロセス駆動型で一つリクエストに対し一つのプロセスを割り当てて処理を行います。そのため大量のアクセスが同時に来た場合、プロセスも大量に起動することになり、最悪C10Kと呼ばれるプロセス番号が足らなくなる現象が発生します(UNIX系OSだと最大32767)。またPHPなどの処理もApacheのプロセスで実行されるため、動的サイトの動作が重くなる傾向があります。
+Apacheはプロセス駆動型で一つリクエストに対し一つのプロセスを割り当てて処理を行います。そのため大量のアクセスが同時に来た場合、プロセスも大量に起動することになり、最悪プロセス番号が足らなくなる現象(C10K問題)が発生します(UNIX系OSだと最大32767)。またPHPなどの処理もApacheのプロセスで実行されるため、動的サイトの動作が重くなる傾向があります。
 
 #### Nginx
 NginxはApacheで述べた問題を解決することを目標に作られたもので、Webサーバーとしての機能だけでなく、リバースプロキシとして動作したりなど様々な機能がありますが、機能追加をするときにはソースからコンパイルしなおさなければなりません(HTTP/2やTLSv1.3に対応させるなど...)
